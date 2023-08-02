@@ -42,3 +42,56 @@ print(my_age, type(my_age))
 # better practice is not to change data types for variables
 # if you can help it
 
+# naming variables is the is one of the hardest things in programming
+
+# small code fragments can use
+# short variables such as a,b,c
+# generally you want variables to mean something
+
+# c could be character
+# Python has no character data type
+c = "A" # still string with one letter
+# s could be string for short term use
+s = "quick throwaway string"
+
+# generally you want variable names to be correct English
+
+# kaķis = "Vinnijs" # very bad variable name
+# print(kaķis) # would work but make life hell for non Latvians
+
+my_cat = "kaķis Vinnijs" # completely okay
+print(my_cat)
+
+# there is style guide for variable names in Python
+# https://peps.python.org/pep-0008/
+
+# so genrally one or two word variable names
+this_very_long_variable_name_is_too_much = "too long"
+
+# for short variables
+# x,y,z for coordinates
+# f for file objects/streams
+# i for looping/iterators
+# t for temporary
+# other short ones could be okay if they make sense in context
+
+# bad names would be a1, a2, a3 if they do not refer to paper sizes :)
+
+# so we could change any data type to string with str(my_data)
+name_str = str(name) # if name was str nothing would happen
+print(name_str)
+my_text = "9001"
+my_number = int(my_text) # so if text is an actual number
+print(my_number)
+# what happens if we give regular text to int?
+# we get error
+# i_am_not_a_number = int(my_name) # will not work
+
+# there is floating point for numbers with  comma( . in english)
+my_float = 10/4
+print(my_float, "is of type", type(my_float))
+
+
+
+
+
