@@ -47,5 +47,11 @@ print(f"is {a}*{a} <= {b} ?", a*a <= b)
 print(f"is {a} not equal to {b} ?", a != b)
 print(f"is {a}*{a} not equal {b} ?", a*a != b) # False because both sides equal
 
+# we can use chains to compare many values
+c = 50
+d = 100
+print(a < b < c < d) # True
+print(a < b < d < c) # False
+
 # we also have is for checking memory, less used, but important for more complex structures
 # used for checking booleans
