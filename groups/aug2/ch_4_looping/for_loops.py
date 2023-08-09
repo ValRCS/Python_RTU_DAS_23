@@ -58,7 +58,17 @@ for i, n in enumerate(range(10,20,2), start=1_001):
 # sometimes we do not care about the number
 # we just want something done n times
 # good style would be to replace n here with _
-# _ siginifies we do not care about this variable
+# _ signifies we do not care about this variable
 for _ in range(5):
     print("Alice talked")
     print("Bob walked")
+    
+for n in range(10):
+    print(n, end= " ") # instead of newline we use space
+    
+# for fizzbuzz, hint
+for n in range(1,11):
+    if n % 2 == 0:
+        print("Even", n)
+    else:
+        print("Odd", n)
