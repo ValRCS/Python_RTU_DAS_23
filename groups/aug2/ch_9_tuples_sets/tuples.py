@@ -80,3 +80,13 @@ except ValueError:
 
 # for extra credit:
 # if we have mutable values in our tuple we can change contents of those values but not the tuple itself
+
+# finally we can have an tuple with 1 element
+single_tuple = (1,) # note the comma
+print(single_tuple)
+# where to use this, when you need to pass a tuple to a function
+# or when you need to unpack a tuple with 1 element
+# empty tuple exists as well
+empty_tuple = ()
+print(empty_tuple)
+# not much you can do with empty tuple, just pass it or convert to list and add values
