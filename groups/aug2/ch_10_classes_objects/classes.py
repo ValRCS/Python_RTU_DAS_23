@@ -162,6 +162,22 @@ another_simple_robot.print_status() # we can call the method on the object
 # for that we will create a Robot class which will have an __init__ method which will be called when we create an object
 
 class Robot:
+    """This is a Robot class which can move around and do other things
+    Attributes:
+        name (str): name of the robot
+        x (int): x coordinate of the robot
+        y (int): y coordinate of the robot
+        direction (str): direction of the robot
+        battery (int): battery level of the robot
+    Methods:
+        print_status: prints current status of the robot
+        move_north: moves the robot north
+        move_south: moves the robot south
+        move_east: moves the robot east
+        move_west: moves the robot west
+        dance: makes the robot dance
+    """	
+
     # Robot will have a name, x and y coordinates, direction, battery level
     # we want to pass this data when we create the object
     # we can do that by using __init__ method
@@ -173,7 +189,7 @@ class Robot:
     # methods with __ in front and back are called magic methods - dunder methods
     # doc on magic methods https://docs.python.org/3/reference/datamodel.html#special-method-names
 
-    def __init__(self, name, x=0, y=0, direction="N", battery=100, quiet=False): 
+    def __init__(self, name, x=0, y=0, direction="N", battery=100, quiet=False, secret="I am a robot"): 
         if not quiet:
             print("Creating a new Robot")
         # we can store the data in the object
@@ -182,14 +198,64 @@ class Robot:
         self.y = y
         self.direction = direction
         self.battery = battery
+        # idea is to hide some data from the user
+        self.__secret = secret # we can store the secret in the object
+        # one use for secrets would be for information that is internal only to the class or object
+        # it is not needed for the user of the class
+        # now outsiders will not have easy access to the secret
         if not quiet:
             print("New Robot created")
             self.print_status() # we can call methods from inside other methods
         # we can call methods from inside other methods
         # we can call methods that we define later in the same class!
+
+    # we could define our own __str__ method to print something more useful than memory address
+    def __str__(self):
+        # only requirement for __str__ method is that it returns a string
+        # do not print anything in __str__ method!!
+        return f"Robot {self.name} is at {self.x},{self.y} facing {self.direction}, battery: {self.battery}"
+    
+    # we could define our own + method to add two robots together
+    def __add__(self, other_robot):
+        # we could create a new robot and return it
+        # we could also modify one of the robots and return it
+        # we could even return something else
+        # here we will create a new robot
+        # of course what we do here is up to us
+        x = (self.x + other_robot.x)//2
+        y = (self.y + other_robot.y)//2
+        battery = self.battery + other_robot.battery
+        new_name = f"{self.name[:4]}_{other_robot.name[:4]}"
+        new_robot = Robot(new_name,x, y, battery=battery, quiet=True)
+        return new_robot
+    
     
 
     # TODO add more methods to the Robot class
+    def get_secret(self, debug=False):
+        # we can access the secret from inside the class
+        # we could add some validation here
+        # also authorization checks
+        if debug:
+            print(f"Secret is {self.__secret}")
+        # even better return
+        return self.__secret
+    
+    # similarly I could control setting of the secret
+    def set_secret(self, new_secret):
+        # we could add some validation here
+        # let's check if new_secret is a string of at least 8 characters
+        if type(new_secret) != str:
+            print("Secret must be a string")
+            return # we could return None or False
+        if len(new_secret) < 8:
+            print("Secret must be at least 8 characters long")
+            return # we could return None or False
+        # also authorization checks
+        self.__secret = new_secret
+# not required but could be useful
+
+
     # let's print current status of the robot
     def print_status(self): # note that we need to pass self as first argument
         # print_status is arbitrary name, we could call it anything
@@ -200,12 +266,22 @@ class Robot:
         # if we do not have any data to return we can return None by default
         # or we could return self 
         return self # returns reference to the object itself
+    
+    # let's make a generic move method 
+    # it will use _move syntax to indicate that it is a private method
+    # it is not really private but it is a convention to not call this method directly
+    # we could call it directly but it is not recommended
+    def _move(self, x=0, y=0, steps=1, battery_drain=1):
+        self.x += x*steps
+        self.y += y*steps
+        self.battery -= battery_drain*steps
+        return self
 
     # let's add some methods to move the robot
     def move_north(self, steps=1, battery_drain=1):
-        self.y += steps
+        # i could rewrite all the move methods to use _move method
+        self._move(y=1, steps=steps, battery_drain=battery_drain)
         self.direction = "N"
-        self.battery -= battery_drain*steps
         # here again we could return self or None
         return self 
 
@@ -234,7 +310,13 @@ class Robot:
     
     # there could be methods which need to return something that is not self
     # for example method that returns distance from another robot
-    def distance_from(self, other_robot):
+    def distance_from(self, other_robot) -> float:
+        """Calculates distance from another robot
+        Args:
+            other_robot (Robot): another robot object
+        Returns:
+            float: distance between the two robots
+        """
         # we could use Pythagorean theorem to calculate Euclidean distance
         # https://en.wikipedia.org/wiki/Pythagorean_theorem
         # d = sqrt((x2-x1)^2 + (y2-y1)^2)
@@ -268,3 +350,143 @@ terminator.print_status()
 # we can also call methods on other robots
 distance = robocop.distance_from(terminator) # this will return a number
 print(f"Distance between {robocop.name} and {terminator.name} is {distance:.2f}")
+
+# more on dunder methods
+# let's print our two robots
+print(robocop) # this will print the memory address of the object without __str__ method
+print(terminator) 
+
+robo_term = robocop + terminator # we can add two robots together
+print(robo_term)
+
+# let's try to access the secret
+# print(robocop.__secret) # this will not work
+try:
+    print(robocop.__secret) # this will not work
+except AttributeError as e:
+    print(f"AttributeError: {e}")
+
+# instead we should provide a method to access the secret
+# now we can just use the get_secret method
+print(f"Secret is {robocop.get_secret()}")
+
+# we can also change set a bad secret
+robocop.set_secret("Valdis")
+print(f"Secret is {robocop.get_secret()}")
+# now let's set a longer one
+robocop.set_secret("Robocop rules")
+print(f"Secret is {robocop.get_secret()}")
+
+# side note we can get hidden variables with _ClassName__variable
+print(f"Secret is {robocop._Robot__secret}") # so called name mangling
+# usually you have no need to do this
+
+print(robocop)
+# i could call _move directly
+# again single _ indicates that this method is not meant to be called directly
+robocop._move(x=1, y=1, steps=5, battery_drain=2)
+print(robocop)
+
+# so inhertiace is when we create a new class from an existing class
+
+# let's make a new class which will inherit from Robot class
+class FlyingRobot(Robot): # note I added Robot as an argument to the class
+    # if we do not add __init__ method to our new class it will use the one from the parent class
+    # we can add new __init__ method to our new class
+    # for one we might want to have a z coordinate
+    # also we might want to have a new battery_drain for flying
+
+    def __init__(self, name, x=0, y=0, z=0, direction="N", battery=100, battery_drain=2, quiet=False):
+        # we can call the __init__ method from the parent class
+        # we can do that by using super() method
+        # super() method returns a reference to the parent class
+        # then we can call methods on the parent class
+        super().__init__(name, x, y, direction, battery, quiet=quiet)
+        # without above call I'd have to rewrite all the init code from the parent class
+        # we can add new data to our new class
+        self.z = z
+
+    # for now we will just add fly method
+    def fly(self):
+        print(f"Robot {self.name} is flying")
+        # TODO add some code to actually fly
+        return self # again for chaining
+    
+    def raise_in_the_air(self, steps=1, battery_drain=1):
+        self.z += steps
+        self.battery -= battery_drain*steps
+        return self
+    
+# now let's create our flying robot
+drone = FlyingRobot("Drone", 10, 10, 30, "S", 200) # we create another object of type FlyingRobot
+
+# now we can use any of Robot methods on our drone
+# also we can use the new fly method
+drone.fly().print_status()
+drone.raise_in_the_air(10).print_status()
+
+# now we would also have to overwrite print_status method to include z coordinate
+# so in practice inheritance is not always the best solution
+
+# alternative would be something like composition
+
+# composition means we build our object from other objects
+
+# so let's make a Robot_Warehouse class
+
+class RobotWarehouse:
+    # we will need to store our robots somewhere
+    # we could use a list
+    # also we will have methods to get stats on our robots
+
+    def __init__(self, warehouse_name, robot_list=()): # note that we use () to indicate empty tuple
+        # do not use [] as default argument since it will be shared by all instances of the class
+        self.name = warehouse_name
+        self.robot_list = list(robot_list)
+
+    def __str__(self):
+        return f"RobotWarehouse {self.name} has {self.get_robot_count()} robots"
+        
+    # get number of robots
+    def get_robot_count(self):
+        # there could be some extra logic here as well
+        # also we could use it we decide to hide the robot_list with __robot_list
+        return len(self.robot_list)
+    
+    # get total battery level of all robots
+    def get_total_battery(self):
+        total_battery = 0
+        for robot in self.robot_list:
+            total_battery += robot.battery
+        return total_battery
+    
+    # add new robot
+    def add_robot(self, robot):
+        # idea is here to check if new robot is suitable for our warehouse
+        # you could add extra logic say check for battery, weight, name , location, etc.
+        self.robot_list.append(robot)
+        return self
+    
+    # remove robot
+    def remove_robot(self, robot):
+        # we could check if robot is in our warehouse
+        self.robot_list.remove(robot)
+        return self
+    
+# lets create our warehouse
+getlini = RobotWarehouse("Getliņi")  # i could have given a list of some robots here
+print(getlini)
+# let's add some robots
+getlini.add_robot(robocop).add_robot(terminator).add_robot(drone)
+# i could even add drone since it inherits from Robot
+# print our warehouse
+print(getlini)
+# print battery level in our warehouse
+print(f"Total battery level in {getlini.name} is {getlini.get_total_battery()}")
+
+# now we could access our robots directly
+# so first robot name
+print(getlini.robot_list[0].name)
+# check if first robot object is same as our robocop object
+print("Robocop Objects are same?", getlini.robot_list[0] is robocop)
+
