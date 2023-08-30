@@ -3,6 +3,8 @@ Python part of the course taught at RTU DAS project
 
 Python course for adult self starters
 
+**Lekcija sākas 18:00**
+
 ## Syllabus
 
 ### Python and Programming
