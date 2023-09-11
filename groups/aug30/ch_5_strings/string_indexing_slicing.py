@@ -152,3 +152,4 @@ print("First five letters", first_five)
 # reversed string
 reversed_food = food[::-1]
 print("Reversed food", reversed_food)
+

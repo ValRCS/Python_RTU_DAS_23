@@ -131,3 +131,41 @@ print(clean_city.replace(" ", "")) # so replace space with nothing
 # would work with any text
 # again if I want these modifications to stick I need to save them to a variable
 clean_city = clean_city.replace(" ", "")
+
+# we still want to replace the 3rd instance of u in our string
+# first print our food
+print("Food", food)
+
+u_index = 6
+print("u_index", u_index, food[u_index]) # so we get u
+new_string = food[:u_index] + "y" + food[u_index+1:]
+print("New string", new_string)
+# could have use f-string
+also_new = f"{food[:u_index]}y{food[u_index+1:]}"
+
+# so now how would we go about finding 3rd instance of some substring?
+needle = "u"
+haystack = "Auzu putra ar zemenēm un sviestu"
+# how many needles do we have in our haystack?
+print(f"We have {haystack.count(needle)} occurences of {needle} in {haystack}") # 5
+# so we need to find 3rd occurence
+# this will work for single letter needles
+find_count = 3
+found_so_far = 0
+for i, c in enumerate(haystack):
+    # so we are looping through all letters in our haystack
+    # and we also have index for each letter
+    if c == needle:
+        found_so_far += 1
+        print(f"Found {needle} at index {i}")
+        if found_so_far == find_count:
+            print(f"Found {needle} at index {i} which is what we want")
+            break # we can stop our loop early
+
+# so now i will hold my index in a variable
+print(f"Found {needle} at index {i} which is what we want and we can use it")
+
+# alternative approach to changing 3rd u to y would be to use 
+# list and join
+
+
