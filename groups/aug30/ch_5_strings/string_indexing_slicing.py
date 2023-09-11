@@ -146,3 +146,9 @@ print(food[ : : -1]) # reverse string
 # also try printing first 5 letters 
 # then try printing first 5 letters backwards
 
+# i can save my slice to a variable - because strings are immutable
+first_five = alphabet[:5]
+print("First five letters", first_five)
+# reversed string
+reversed_food = food[::-1]
+print("Reversed food", reversed_food)
