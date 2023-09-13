@@ -232,5 +232,26 @@ except TypeError as e:
     print(f"TypeError: {e}")
 # so sum works only on numbers
 
+# list is a very generic data structure
+# we can store anything inside
+
+anything_goes_list = [1, 2, 3, 
+                      "Aldaris", "Valmiermuižas", "Tērvetes", 
+                      "Bauskas", "Užavas", 
+                      True, False, None, 
+                      [1,2,3]] # there are other lists inside this list
+# we can even store functions inside later on this
+
+# so we can convert a string to a list
+food = "potatoes, tomatoes, cucumbers, carrots, onions"
+default_items = food.split() # creates a new list using whitespace as separator
+print(f"default_items: {default_items}")
+items = food.split(", ") # creates a new list using custom separator
+print(f"items: {items}")
+
+
+# again to go back to string from list of strings we use join()
+big_food = "XXX".join(items) # creates a new string using XXX as separator
+print(f"big_food: {big_food}")  
 
 
