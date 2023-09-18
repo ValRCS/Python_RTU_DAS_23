@@ -173,3 +173,52 @@ for key in phone_book.copy(): # note copy first
         del phone_book[key]
 
 print("Phone book without Līgas", phone_book)
+
+
+# keys can be numeric as well
+phone_book[123] = "Valdis phone number"
+print(phone_book)
+# what is the issue with this?
+print(phone_book[123]) # works but  looks like a list index
+# we would have to use type to check is this a dictionary or a list
+
+# if our indexes are small and consecutive we could use a list instead
+# maybe some indexes are missing but that would be fine
+# if we have large indexes or non consecutive we should use a dictionary
+# so 1552132, 134134, 151551 would be good candidates for dictionary keys
+# but 1, 2, 3 would be better for a list
+
+# let's get all the keys in a list
+key_list = list(phone_book.keys()) # so we are converting keys to a list
+print("Key list", key_list)
+# let's get all the values in a list
+value_list = list(phone_book.values()) # so we are converting values to a list
+print("Value list", value_list)
+# so key_list and value_list are just names for two independent lists
+# there is no relation between the two lists
+
+# but I can create a dictionary from two lists
+# let's add a few more keys and values
+key_list.append("Ede")
+value_list.append(12345678)
+key_list.append("Edgars")
+# print key and value lists
+print("Key list", key_list, "length", len(key_list))
+print("Value list", value_list, "length", len(value_list))
+
+# so they are of different lengths what will happen when we create a dictionary?
+# this recipe zips two lists into a dictionary
+new_dict = dict(zip(key_list, value_list)) # so zip will combine two lists into a list of tuples
+
+# let's print our new dictionary
+print("New dictionary", new_dict)
+# so Edgars did not get a phone number because we had no value for him
+# so this dictionary creation will stop at the shortest list
+
+# so with this we can also reverse a dictionary
+reversed_dict = dict(zip(value_list, key_list))
+print("Reversed dictionary", reversed_dict)
+# note this might lose some keys if we have duplicate values
+# in this case 12345678 was used twice so we only have one key for it
+
+
