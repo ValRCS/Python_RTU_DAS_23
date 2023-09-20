@@ -128,6 +128,8 @@ class Robot:
         self.battery_level = battery_level
         self.x = x
         self.y = y
+        # there is concept called information hiding - encapsulation
+        # in OOP we want to hide some data from the user
         # let's create a self._nickname attribute
         # this is a convention to indicate that this attribute should not be accessed directly
         # but we can still access it if we want to
@@ -274,3 +276,159 @@ bb8.set_secret_api_key("123456789")
 # now I get correct secret_api_key
 print(bb8.get_secret_api_key()) # prints 123456789
 
+# now how could we create a flying Robot class that also has z coordinate
+#  but otherwise is the same as Robot class
+
+# we could write everything again using copy and paste
+# or we could use a concept called inheritance - mantojamība Latviski
+
+# let's create a FlyingRobot class that inherits from Robot class
+class FlyingRobot(Robot):
+    # i will want to create a custom __init__ method since I have z coordinate
+    def __init__(self, name="Robby", model="", battery_level=100, x=0, y=0, z=0, secret_key=None):
+        # i could copy and paste everything from Robot class
+        # but I will use a concept called super()
+        # super() is a reference to the parent class
+        # super() is a special method name
+        # docs: https://docs.python.org/3/library/functions.html#super
+        # super() will run __init__ method of the parent class
+        super().__init__(name, model, battery_level, x, y, secret_key)
+        # now I can add my own attributes
+        self.z = z
+
+    def fly_up(self, distance=1):
+        self.z += distance
+        self.battery_level -= (distance * 1)
+
+    # let's override print_status method
+    def print_status(self):
+        # return super().print_status() + f" and z:{self.z}"
+        # or easier would be 
+        print(f"Robot {self.name} is at {self.x},{self.y},{self.z} with battery level {self.battery_level}")
+        return self
+
+# let's create an instance of this class
+flying_robot = FlyingRobot("R2D2","A100",50,0,0) # will run __init__ method if it exists
+# notice I did not need to pass self parameter, it is automatically passed
+print(flying_robot) # prints Robot R2D2 is at 0,0 with battery level 50
+
+flying_robot.fly_up(10)
+flying_robot.print_status() # prints Robot R2D2 is at 0,0,10 with battery level 40
+
+# there is another approach as an alternative to inheritance
+# it is called composition - kompozīcija Latviski
+# idea we create an object of another class inside our class
+
+# let's create a Battery class
+class Battery:
+    def __init__(self, capacity=100):
+        self.capacity = capacity
+        self.remaining = capacity
+    
+    def get_capacity(self):
+        return self.capacity
+    
+    def get_remaining(self):
+        return self.remaining
+    
+    def set_remaining(self, new_remaining):
+        self.remaining = new_remaining
+        return self
+    
+# let's create an engine class
+class Engine:
+    def __init__(self, power=100):
+        self.power = power
+    
+    def get_power(self):
+        return self.power
+    
+    def set_power(self, new_power):
+        self.power = new_power
+        return self
+    
+class Wheel:
+    def __init__(self, size=10):
+        self.size = size
+    
+    def get_size(self):
+        return self.size
+    
+    def set_size(self, new_size):
+        self.size = new_size
+        return self
+    
+# let's create a ComposableRobot class that will utilize Battery and Engine and Wheel classes
+# Wheels will be passed as a list or tuple
+
+class ComposableRobot:
+    def __init__(self, name="Robby", model="", battery=None, engine=None, wheels=None):
+        self.name = name
+        self.model = model
+        self.battery = battery
+        self.engine = engine
+        self.wheels = wheels
+    
+    def get_name(self):
+        return self.name
+    
+    def get_model(self):
+        return self.model
+    
+    def get_battery(self):
+        return self.battery
+    
+    def get_engine(self):
+        return self.engine
+    
+    def get_wheels(self):
+        return self.wheels
+    
+    def set_name(self, new_name):
+        self.name = new_name
+        return self
+    
+    def set_model(self, new_model):
+        self.model = new_model
+        return self
+    
+    def set_battery(self, new_battery):
+        self.battery = new_battery
+        return self
+    
+    def set_engine(self, new_engine):
+        self.engine = new_engine
+        return self
+    
+    def set_wheels(self, new_wheels):
+        self.wheels = new_wheels
+        return self
+    
+    def print_status(self):
+        print(f"Robot {self.name} has {self.battery.get_remaining()} battery remaining and {self.engine.get_power()} power")
+        print(f"Robot has {len(self.wheels)} wheels of size {self.wheels[0].get_size()}")
+        return self
+    
+# let's make our composable robot instance but first we need some components
+
+# let's create a battery
+battery = Battery(100)
+# let's create an engine
+engine = Engine(100)
+# let's create some wheels using list comprehension
+wheels = [Wheel(10) for _ in range(4)] # _ is a throwaway variable, we don't care about it
+
+# now we can create our composable robot
+composable_robot = ComposableRobot("Robby", "A100", battery, engine, wheels)
+composable_robot.print_status() # prints Robot Robby has 100 battery remaining and 100 power
+# i can also access battery directly
+print(composable_robot.battery.get_remaining()) # prints 100
+
+# another composable robot but we would want new components else they will be sharing same components!!
+battery_2 = Battery(50)
+engine_2 = Engine(50)
+wheels_2 = [Wheel(20) for _ in range(4)] # _ is a throwaway variable, we don't care about it
+composable_robot_2 = ComposableRobot("C3PO", "B100", battery_2, engine_2, wheels_2)
+# let's print status of both robots
+composable_robot.print_status() # prints Robot Robby has 100 battery remaining and 100 power
+composable_robot_2.print_status() # prints Robot C3PO has 50 battery remaining and 50 power
