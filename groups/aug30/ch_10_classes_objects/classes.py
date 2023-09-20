@@ -121,13 +121,22 @@ class Robot:
     # there are about 100 special method names in Python
     # they all start and end with double underscores
     # docs: https://docs.python.org/3/reference/datamodel.html#special-method-names
-    def __init__(self, name="Robby", model="", battery_level=100, x=0, y=0):
+    def __init__(self, name="Robby", model="", battery_level=100, x=0, y=0, secret_key=None):
         print("Starting to create a robot")
         self.name = name
         self.model = model
         self.battery_level = battery_level
         self.x = x
         self.y = y
+        # let's create a self._nickname attribute
+        # this is a convention to indicate that this attribute should not be accessed directly
+        # but we can still access it if we want to
+        self._nickname = self.name[:3] # this is a convention, not a requirement
+        # we can also create a self.__secret_key attribute
+        # this is a convention to indicate that this attribute should not be accessed directly
+        # and we can not access it directly except by using some special methods
+        self.__secret_api_key = secret_key # __secret_api_key is not accessible directly
+        # we will create methods to access it so called setters and getters
         print(f"Robot named {self.name} created")
 
     # typically we will want to create a __str__ method
@@ -139,6 +148,49 @@ class Robot:
     def __str__(self):
         # i could do some stuff here - prepare a string
         return f"Robot {self.name} is at x:{self.x},y:{self.y} battery level:{self.battery_level}"
+
+    # let's createa our own __add__ method
+    # this will allow us to use + operator on our objects
+    # here it will create a new robot with name of both robots combined
+    # and combine battery levels
+    # and location will be average of both locations
+    # this is just an example, you can do whatever you want
+    def __add__(self, other):
+        # new_robot = Robot()
+        # new_robot.name = self.name + other.name
+        # new_robot.battery_level = (self.battery_level + other.battery_level) / 2
+        # new_robot.x = (self.x + other.x) / 2
+        # new_robot.y = (self.y + other.y) / 2
+        # first lets create the new attributes
+        new_name = self.name + other.name
+        new_model = self.model # we can use self.model or other.model, it does not matter
+        new_battery_level = self.battery_level + other.battery_level
+        new_x = (self.x + other.x) / 2
+        new_y = (self.y + other.y) / 2
+        # now let's create a new robot
+        new_robot = Robot(new_name, new_model, new_battery_level, new_x, new_y)
+        return new_robot # i could have returned some other object, but i chose to return a Robot object
+    
+    # there are many more dunder methods that we can create
+    # -, *, /, //, %, **, <, >, <=, >=, ==, !=, etc.
+
+    # let's create a method that returns secret_api_key
+    def get_secret_api_key(self):
+        # i could add some extra checks and validations here
+        # could check if user is authorized to access this key
+        return self.__secret_api_key
+    
+    # let's create a method that sets secret_api_key
+    def set_secret_api_key(self, new_key):
+        # i could add some extra checks and validations here
+        # could check if user is authorized to access this key
+        # simple check for length
+        if len(new_key) < 8: # 8 should be a constant, but we will leave it for now
+            # raise ValueError("Key must be at least 8 characters long")
+            print("Key must be at least 8 characters long")
+            return self # or return None
+        self.__secret_api_key = new_key
+        return self # optional for chaining
 
     # let's create our own method that prints status of the robot
     # name is up to us, but it is a good idea to use a verb at start
@@ -198,3 +250,27 @@ print(robby) # prints Robot Robby is at 0,0 with battery level 100
 
 # now with return self i can CHAIN methods
 robby.move_up(5).move_up(13).move_robot(delta_x=5, delta_y= -4).print_status()
+# so now I can create a new robot by adding robby and bb8
+print(bb8)
+# let's create a new robot by adding robby and bb8
+robby_bb8 = robby + bb8  # techincally this is the same as robby.__add__(bb8)
+print(robby_bb8) # prints Robot RobbyBB8
+
+# now I can access nickname attribute of robby_bb8 just like regular attribute
+print(robby_bb8._nickname) # prints Rob 
+
+# so now I would like to print secret_api_key of say bb8
+try:
+    print(bb8.__secret_api_key) # this will not work
+except AttributeError as e:
+    print(e)
+
+# now I get correct secret_api_key
+print(bb8.get_secret_api_key()) # prints None
+# let's try to set secret_api_key to say 123456 which is too short
+bb8.set_secret_api_key("123456") # prints Key must be at least 8 characters long
+# now let's try to set secret_api_key to say 123456789 which is long enough
+bb8.set_secret_api_key("123456789")
+# now I get correct secret_api_key
+print(bb8.get_secret_api_key()) # prints 123456789
+
