@@ -25,7 +25,7 @@ print(f"Will save in {dst_file}")
 
 start_time = datetime.datetime.now()
 with urllib.request.urlopen(url) as response:
-    text = response.read().decode("utf-8")
+    text = response.read().decode("utf-8") # might not work without decode
 end_time = datetime.datetime.now()
 download_time = end_time - start_time
 print(f"It took {download_time} to download the file")
