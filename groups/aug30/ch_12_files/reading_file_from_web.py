@@ -1,6 +1,7 @@
 # how to download file from a web address?
 
 import requests
+# if no requests module then install it with pip install requests
 
 url = 'https://github.com/ValRCS/Python_RTU_DAS_23/raw/main/data/poems/veidenbaums.txt'
 
