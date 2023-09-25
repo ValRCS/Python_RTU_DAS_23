@@ -20,6 +20,10 @@
 
 * Python Standard Library
 
+### Python Virtual Environments
+
+* venv - Python 3
+
 ### Installing External Packages
 
 * Python Package Index (PyPI)
